@@ -99,8 +99,8 @@ def main():
         print("Usage: python convert_to_csv.py <input_file> <output_file>")
         sys.exit(1)
 
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
+    input_file = sys.argv[1] if len(sys.argv) > 1 else 'ASSESSMENTS.txt'
+    output_file = sys.argv[2] if len(sys.argv) > 2 else 'output.csv'
 
     with open(input_file, "r") as file:
         input_data = file.read()
