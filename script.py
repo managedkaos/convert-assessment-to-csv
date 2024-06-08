@@ -92,19 +92,32 @@ def write_to_csv(data, csv_filename):
             writer.writerow(row)
 
 
+def read_input():
+    """
+    Read input from STDIN or a file.
+    """
+
+    # Reading from STDIN
+    if not sys.stdin.isatty():
+        assessment_input = sys.stdin.read()
+
+    # Reading from a file
+    else:
+        if len(sys.argv) != 2:
+            print("Usage: python script.py <input_file>")
+            sys.exit(1)
+        input_file = sys.argv[1]
+        with open(input_file, "r") as file:
+            assessment_input = file.read()
+    return assessment_input
+
+
 def main():
     """
     the main function
     """
-    if len(sys.argv) != 3:
-        print("Usage: python convert_to_csv.py <input_file> <output_file>")
-        sys.exit(1)
-
-    input_file = sys.argv[1] if len(sys.argv) > 1 else 'ASSESSMENTS.txt'
-    output_file = sys.argv[2] if len(sys.argv) > 2 else 'output.csv'
-
-    with open(input_file, "r") as file:
-        input_data = file.read()
+    input_data = read_input()
+    output_file = "output.csv"
 
     parsed_data = parse_input_data(input_data)
     write_to_csv(parsed_data, output_file)
@@ -112,5 +125,4 @@ def main():
 
 
 if __name__ == "__main__":
-    root_directory = os.getenv("PROJECT_HOME", os.getcwd())
     main()
