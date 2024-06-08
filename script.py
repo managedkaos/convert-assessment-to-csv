@@ -4,7 +4,6 @@ Use this template to create a custom Python function
 
 import csv
 import sys
-import os
 
 
 def parse_input_data(input_data):
