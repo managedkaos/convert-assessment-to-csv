@@ -4,6 +4,7 @@ Use this template to create a custom Python function
 
 import csv
 import sys
+import os
 
 
 def parse_input_data(input_data):
@@ -111,4 +112,5 @@ def main():
 
 
 if __name__ == "__main__":
+    root_directory = os.getenv("PROJECT_HOME", os.getcwd())
     main()
