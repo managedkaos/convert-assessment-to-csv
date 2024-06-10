@@ -84,11 +84,10 @@ def write_to_csv(data, csv_filename):
         "Matches Learning Objective",
     ]
 
-    with open(csv_filename, mode="w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=header)
-        writer.writeheader()
-        for row in data:
-            writer.writerow(row)
+    writer = csv.DictWriter(sys.stdout, fieldnames=header)
+    writer.writeheader()
+    for row in data:
+        writer.writerow(row)
 
 
 def read_input():
@@ -120,7 +119,6 @@ def main():
 
     parsed_data = parse_input_data(input_data)
     write_to_csv(parsed_data, output_file)
-    print(f"Data has been written to {output_file}")
 
 
 if __name__ == "__main__":

@@ -3,15 +3,16 @@ Unit tests
 """
 
 import csv
+import io
 import unittest
+from unittest.mock import patch
 from script import parse_input_data, write_to_csv
-import os
 
 
 class TestConvertToCSV(unittest.TestCase):
 
     def setUp(self):
-        self.input_data = """Script Name: Example Script
+        self.input_data = """Script Name: An Introduction to Python
 Question: What is Python?
 Correct Answer: A programming language
 Incorrect 1: A snake
@@ -22,9 +23,10 @@ Incorrect 1 Explanation: While Python is also a type of snake, it is not the cor
 Incorrect 2 Explanation: Python is not related to coffee.
 Incorrect 3 Explanation: Python is not a car brand.
 """
+
         self.expected_data = [
             {
-                "Video Title (from TOC)": "Example Script",
+                "Video Title (from TOC)": "An Introduction to Python",
                 "Question": "What is Python?",
                 "Correct": "A programming language",
                 "Incorrect 1": "A snake",
@@ -41,17 +43,17 @@ Incorrect 3 Explanation: Python is not a car brand.
         parsed_data = parse_input_data(self.input_data)
         self.assertEqual(parsed_data, self.expected_data)
 
-    def test_write_to_csv(self):
+    @patch("sys.stdout", new_callable=io.StringIO)
+    def test_write_to_stdout(self, mock_stdout):
         parsed_data = parse_input_data(self.input_data)
-        csv_filename = "test_output.csv"
-        write_to_csv(parsed_data, csv_filename)
+        write_to_csv(parsed_data, None)
 
-        with open(csv_filename, newline="") as csvfile:
-            reader = csv.DictReader(csvfile)
-            rows = list(reader)
+        output = mock_stdout.getvalue()
+        reader = csv.DictReader(io.StringIO(output))
+        rows = list(reader)
 
         self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]["Video Title (from TOC)"], "Example Script")
+        self.assertEqual(rows[0]["Video Title (from TOC)"], "An Introduction to Python")
         self.assertEqual(rows[0]["Question"], "What is Python?")
         self.assertEqual(rows[0]["Correct"], "A programming language")
         self.assertEqual(rows[0]["Incorrect 1"], "A snake")
@@ -71,8 +73,6 @@ Incorrect 3 Explanation: Python is not a car brand.
         self.assertEqual(
             rows[0]["Incorrect 3 Explanation"], "Python is not a car brand."
         )
-
-        os.remove(csv_filename)
 
 
 if __name__ == "__main__":
